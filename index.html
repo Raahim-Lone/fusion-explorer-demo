@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fusion‑Guided Exploration (3D) – Live Demo</title>
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.161/build/three.module.js" } }</script>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { opacity: 0; animation: fadeIn 0.6s ease-out forwards; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+  </style>
+</head>
+<body class="bg-slate-50 text-gray-800">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <h1 class="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+        Robot Exploration Demo
+      </h1>
+      <nav class="flex gap-6">
+        <a href="#about-page" class="tab-link text-gray-600 hover:text-emerald-600 transition">About</a>
+        <a href="#demo-page" class="tab-link text-gray-600 hover:text-emerald-600 transition">Demo</a>
+      </nav>
+    </header>
+
+    <!-- About Page -->
+    <section id="about-page" class="relative overflow-hidden">
+      <div class="absolute inset-0 transform -skew-y-3 bg-gray-100"></div>
+      <div class="relative max-w-4xl mx-auto py-16 px-6 space-y-12">
+        <!-- Introduction -->
+        <h2 class="text-3xl md:text-4xl font-bold text-emerald-700 fade-in">How to Use the Demo</h2>
+        <p class="text-lg text-gray-600 fade-in delay-100">
+          Explore how a fusion‑guided model can dramatically reduce LiDAR scan time, improve coverage efficiency, and adapt dynamically to environment complexity.
+        </p>
+
+        <!-- Steps -->
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="space-y-6 fade-in delay-200">
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <span class="mt-1 inline-block w-3 h-3 bg-emerald-600 rounded-full flex-shrink-0"></span>
+                <span class="ml-3">After checking the 'Enable Fusion' Box, Click “Demo” to see side‑by‑side comparison of Nearest Frontier vs Fusion.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mt-1 inline-block w-3 h-3 bg-teal-500 rounded-full flex-shrink-0"></span>
+                <span class="ml-3">Use the Run, Pause, and Reset buttons to control the simulation flow.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mt-1 inline-block w-3 h-3 bg-cyan-500 rounded-full flex-shrink-0"></span>
+                <span class="ml-3">Adjust grid size to change map complexity and toggle Fusion for ML‑guided scanning.</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Integrated Animation -->
+          <div class="flex justify-center items-center fade-in delay-300">
+            <div class="w-56 h-56 bg-gradient-to-tr from-emerald-300 to-teal-200 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <!-- Could embed a Lottie or interactive SVG here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Explanations -->
+        <div class="space-y-8">
+          <!-- Simulation Overview -->
+          <div class="fade-in delay-100">
+            <h3 class="text-2xl font-semibold text-gray-700">Simulation Overview</h3>
+            <p class="text-gray-600">
+              The simulation runs on a grid where a robot explores unknown cells. Each step combines travel and a LiDAR scan, revealing nearby free or obstacle cells. The goal is to maximize coverage while minimizing time spent scanning. They are assigned with covering 95% of the room - the robot with less simulated time (correlational with real wall-clock time) wins.
+            </p>
+          </div>
+          <!-- Fusion Model -->
+          <div class="fade-in delay-300">
+            <h3 class="text-2xl font-semibold text-gray-700">Fusion Model</h3>
+            <p class="text-gray-600">
+              When Fusion is enabled, an ML model predicts scan durations based on context (e.g., clutter, grid size). The robot then selects frontiers by minimizing combined travel and predicted scan time, focusing scans where they yield the most new information. 
+            </p>
+          </div>
+          <!-- Grid Size Impact -->
+          <div class="fade-in delay-300">
+            <h3 class="text-2xl font-semibold text-gray-700">Baseline vs Fusion Model</h3>
+            <p class="text-gray-600">
+                The Baseline (Left) and Fusion-Guided (Right) use the same algorithm for movement. The difference is the time taken to scan the environment, the fusion model taking scan-related choices that are faster.
+            </p>
+          </div>
+          <div class="fade-in delay-200">
+            <h3 class="text-2xl font-semibold text-gray-700">Legend</h3>
+            <ul class="space-y-2 text-gray-600">
+              <li><span class="inline-block w-4 h-4 rounded bg-black mr-2"></span>Unknown: Areas not yet scanned.</li>
+              <li><span class="inline-block w-4 h-4 rounded bg-teal-400 mr-2"></span>Explored Free: Clear space identified.</li>
+              <li><span class="inline-block w-4 h-4 rounded bg-red-500 mr-2"></span>Obstacle/Hazard: Walls or blocked regions.</li>
+              <li><span class="inline-block w-4 h-4 rounded bg-cyan-400 mr-2"></span>Frontier: Boundary between known and unknown.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo Page -->
+    <section id="demo-page" class="hidden py-12 px-6 space-y-10">
+      <!-- Controls Panel with Separator -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+          <!-- Grid Size -->
+          <div class="md:col-span-1 flex flex-col pr-4 border-r border-gray-200">
+            <span class="text-sm font-medium text-gray-600">Grid Size</span>
+            <input id="size" type="number" min="20" max="40" value="26"
+                   class="mt-1 bg-slate-100 text-gray-800 rounded px-2 py-1 text-sm border border-gray-200">
+          </div>
+          <!-- Buttons -->
+          <div class="md:col-span-2 flex items-center justify-center space-x-4 px-4">
+            <button id="runBtn"   class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg transition">▶ Run</button>
+            <button id="pauseBtn" class="bg-teal-500  hover:bg-teal-400  text-white px-5 py-2 rounded-lg transition">❚❚ Pause</button>
+            <button id="resetBtn" class="bg-gray-300  hover:bg-gray-200  text-gray-800 px-5 py-2 rounded-lg transition">↻ Reset</button>
+          </div>
+          <!-- Toggle Fusion -->
+          <div class="md:col-span-1 flex items-center pl-4 border-l border-gray-200 justify-end">
+            <label class="flex items-center text-sm text-gray-700">
+              <input id="useFusion" type="checkbox" class="mr-2" checked> Enable Fusion (Must be clicked in order for the model to be applied)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulation Views -->
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 fade-in">
+        <div class="relative bg-white border border-gray-200 rounded-2xl p-3 shadow-sm">
+          <div class="absolute left-3 top-3 text-xs px-2 py-1 bg-gray-100 rounded">Baseline</div>
+          <canvas id="threeCanvasA" class="w-full h-[500px] rounded-lg"></canvas>
+        </div>
+        <div class="relative bg-white border border-gray-200 rounded-2xl p-3 shadow-sm">
+          <div class="absolute left-3 top-3 text-xs px-2 py-1 bg-teal-100 rounded">Fusion‑guided</div>
+          <canvas id="threeCanvasB" class="w-full h-[500px] rounded-lg"></canvas>
+        </div>
+      </div>
+
+      <!-- Centered Metrics Box -->
+      <div class="flex justify-center">
+        <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm fade-in">
+          <h3 class="text-sm font-semibold text-gray-600">Metrics</h3>
+          <div class="mt-2 grid grid-cols-2 gap-2 text-sm text-gray-800">
+            <div>Coverage: <span id="covVal">0%</span></div>
+            <div>Time:     <span id="timeVal">0.0s</span></div>
+            <div>Distance: <span id="distVal">0</span></div>
+            <div>Steps:    <span id="stepsVal">0</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center text-xs text-gray-500 py-6">Tip: Fusion data loads automatically.</footer>
+  </div>
+
+<script type="module" src="./app.js"></script>
+<script>
+  document.querySelectorAll('nav a.tab-link').forEach(link=>{
+    link.addEventListener('click', e=>{
+      e.preventDefault();
+      document.querySelectorAll('#about-page, #demo-page').forEach(sec=>sec.classList.add('hidden'));
+      document.querySelector(link.getAttribute('href')).classList.remove('hidden');
+      document.querySelectorAll('nav a.tab-link').forEach(l=>l.classList.remove('text-emerald-600','font-bold'));
+      link.classList.add('text-emerald-600','font-bold');
+    });
+  });
+  document.querySelector('nav a[href="#about-page"]').click();
+</script>
+</body>
+</html>
