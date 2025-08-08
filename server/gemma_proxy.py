@@ -7,9 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Run:  uvicorn gemma_proxy:app --host 0.0.0.0 --port 8000
-# Requires: `ollama run gemma3:4b` working on the host.
 
-MODEL = "gemma3:4b"
+MODEL = "gemma3n:e4b"
 JSON_ONLY = "Return ONLY a JSON list (e.g., [3,1,2]). No prose."
 
 class Candidate(BaseModel):
